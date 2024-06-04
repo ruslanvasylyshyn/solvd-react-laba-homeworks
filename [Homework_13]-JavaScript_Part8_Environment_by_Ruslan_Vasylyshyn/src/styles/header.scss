@@ -1,0 +1,20 @@
+.header {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 65px;
+
+  &__button {
+    margin-top: 56px;
+    cursor: pointer;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .header {
+    margin-bottom: 30px;
+    &__button {
+      width: 48px;
+      height: 48px;
+    }
+  }
+}
