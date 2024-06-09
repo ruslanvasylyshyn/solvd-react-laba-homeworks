@@ -6,15 +6,22 @@ class Serializable {
         // Add class information at the root level
         return { __class__: this.constructor.name, ...value };
       }
-      if (value === Infinity) return 'Infinity';
-      if (value === -Infinity) return '-Infinity';
-      if (Number.isNaN(value)) return 'NaN';
+      if (value === Infinity) return "Infinity";
+      if (value === -Infinity) return "-Infinity";
+      if (Number.isNaN(value)) return "NaN";
       if (value === 0 && 1 / value === -Infinity) return 0; // Handle -0
-      if (value instanceof Date) return { __type__: 'Date', value: value.toISOString() };
+      if (value instanceof Date)
+        return { __type__: "Date", value: value.toISOString() };
       if (value === null) return null;
-      if (Array.isArray(value)) return value.map(v => this.serializeValue(v));
-      if (typeof value === 'object' && value !== null) {
-        return { __type__: 'Object', ...value };
+      if (Array.isArray(value)) return value.map((v) => this.serializeValue(v));
+      if (
+        value &&
+        typeof value === "object" &&
+        !Array.isArray(value) &&
+        value.__proto__.constructor.name !== "Object" &&
+        value !== null
+      ) {
+        return { __type__: "Object", ...value };
       }
       return value;
     });
@@ -23,11 +30,11 @@ class Serializable {
   // Deserialize the JSON string to an object
   static wakeFrom(serialized) {
     const data = JSON.parse(serialized, (key, value) => {
-      if (value === 'Infinity') return Infinity;
-      if (value === '-Infinity') return -Infinity;
-      if (value === 'NaN') return NaN;
-      if (value && value.__type__ === 'Date') return new Date(value.value);
-      if (value && value.__type__ === 'Object') return { ...value };
+      if (value === "Infinity") return Infinity;
+      if (value === "-Infinity") return -Infinity;
+      if (value === "NaN") return NaN;
+      if (value && value.__type__ === "Date") return new Date(value.value);
+      if (value && value.__type__ === "Object") return { ...value };
       return value;
     });
 
@@ -36,24 +43,33 @@ class Serializable {
 
     // Check if the class names match
     if (this.name !== __class__) {
-      throw new Error(`Cannot wake up from serialized data of class ${__class__}`);
+      throw new Error(
+        `Cannot wake up from serialized data of class ${__class__}`
+      );
     }
 
     // Assign the parsed data to a new instance of the class
-    return Object.assign(new this(), rest);
+    return Object.assign(this, rest);
   }
 
   // Helper method for value serialization
   serializeValue(value) {
-    if (value === Infinity) return 'Infinity';
-    if (value === -Infinity) return '-Infinity';
-    if (Number.isNaN(value)) return 'NaN';
+    if (value === Infinity) return "Infinity";
+    if (value === -Infinity) return "-Infinity";
+    if (Number.isNaN(value)) return "NaN";
     if (value === 0 && 1 / value === -Infinity) return 0;
-    if (value instanceof Date) return { __type__: 'Date', value: value.toISOString() };
+    if (value instanceof Date)
+      return { __type__: "Date", value: value.toISOString() };
     if (value === null) return null;
-    if (Array.isArray(value)) return value.map(v => this.serializeValue(v));
-    if (typeof value === 'object' && value !== null) {
-      return { __type__: 'Object', ...value };
+    if (Array.isArray(value)) return value.map((v) => this.serializeValue(v));
+    if (
+      value &&
+      typeof value === "object" &&
+      !Array.isArray(value) &&
+      value.__proto__.constructor.name !== "Object" &&
+      value !== null
+    ) {
+      return { __type__: "Object", ...value };
     }
     return value;
   }
@@ -63,7 +79,7 @@ class UserDTO extends Serializable {
   constructor(data) {
     super();
     if (data) {
-      if (typeof data === 'string') {
+      if (typeof data === "string") {
         data = JSON.parse(data);
       }
       this.firstName = data.firstName;
@@ -75,7 +91,9 @@ class UserDTO extends Serializable {
 
   printInfo() {
     console.log(
-      `${this.firstName[0]}. ${this.lastName} - ${this.phone}, ${this.birth.toISOString()}`
+      `${this.firstName[0]}. ${this.lastName} - ${
+        this.phone
+      }, ${this.birth.toISOString()}`
     );
   }
 
