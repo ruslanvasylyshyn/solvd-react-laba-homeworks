@@ -1,4 +1,5 @@
-const TrafficLight = ({ redClass, yellowClass, greenClass }) => {
+const TrafficLight = (colors) => {
+  const { redClass, yellowClass, greenClass } = colors;
   return (
     <div className="traffic-light-wrapper">
       <div className="traffic-light">
