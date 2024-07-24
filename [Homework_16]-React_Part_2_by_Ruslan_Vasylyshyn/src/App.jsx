@@ -1,4 +1,7 @@
-const { useState, useEffect } = React;
+import { useState } from "react";
+import refreshImg from "./assets/img/refresh.svg";
+import tilesImg from "./assets/img/tiles.svg";
+import "./App.css";
 
 const fetchAvatar = async () => {
   try {
@@ -11,9 +14,7 @@ const fetchAvatar = async () => {
     const data = await response.json();
     return data[0];
   } catch (error) {
-    throw new Error(
-      "The server is temporarily unavailable. Try again later."
-    );
+    throw new Error("The server is temporarily unavailable. Try again later.");
   }
 };
 
@@ -25,12 +26,12 @@ const Avatar = ({ avatar, onUpdate, isLoading }) => (
       <img src={avatar.url} alt={`${avatar.first_name} ${avatar.last_name}`} />
     )}
     <button className="update-button" onClick={onUpdate}>
-      <img src="./img/refresh.svg" />
+      <img src={refreshImg} />
     </button>
   </div>
 );
 
-const App = () => {
+function App() {
   const [avatars, setAvatars] = useState([]);
   const [loadingIndexes, setLoadingIndexes] = useState([]);
   const [isAdding, setIsAdding] = useState(false);
@@ -42,6 +43,7 @@ const App = () => {
     try {
       const newAvatar = await fetchAvatar();
       setAvatars([...avatars, newAvatar]);
+      setError(null);
     } catch (error) {
       setError(error.message);
     } finally {
@@ -81,7 +83,7 @@ const App = () => {
 
   return (
     <div className="app-wrapper">
-      {error && <div className="error-message">{error}</div>}
+      {error !== null ? <div className="error-message">{error}</div> : <></>}
       <div className="avatars">
         {avatars.map((avatar, index) => (
           <Avatar
@@ -98,7 +100,7 @@ const App = () => {
         )}
 
         <button className="add-button" onClick={addAvatar}>
-          <img src="./img/tiles.svg" />
+          <img src={tilesImg} />
         </button>
       </div>
 
@@ -112,6 +114,6 @@ const App = () => {
       </div>
     </div>
   );
-};
+}
 
-ReactDOM.render(<App />, document.getElementById("root"));
+export default App;
