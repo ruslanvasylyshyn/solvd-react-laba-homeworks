@@ -1,29 +1,31 @@
-const { useState, useEffect, useRef } = React;
+import { useState, useEffect, useRef } from "react";
+import deleteImg from "./assets/img/delete-btn.svg";
+import updateImg from "./assets/img/update-btn.svg";
+import "./App.css";
 
-const App = () => {
+function App() {
   const [todos, setTodos] = useState([]); // State to manage the list of to-dos
   const [inputValue, setInputValue] = useState(""); // State to manage the input value for adding new to-dos
   const [editIndex, setEditIndex] = useState(null); // State to track the index of the to-do being edited
   const [editValue, setEditValue] = useState(""); // State to manage the value being edited
+  const [loading, setLoading] = useState(true); // State to manage loading status
   const editInputRef = useRef(null); // Ref to focus on the input during editing
 
-  console.log(todos);
-  // console.log(todos[0].task);
-  todos.forEach((todo) => {
-    console.log(todo.task);
-  });
   // useEffect to load data from localStorage
   useEffect(() => {
     const savedTodos = JSON.parse(localStorage.getItem("todos"));
     if (savedTodos) {
       setTodos(savedTodos);
     }
+    setLoading(false); // Set loading to false after data is loaded
   }, []);
 
   // useEffect to save data to localStorage when todos change
   useEffect(() => {
-    localStorage.setItem("todos", JSON.stringify(todos));
-  }, [todos]);
+    if (!loading) {
+      localStorage.setItem("todos", JSON.stringify(todos));
+    }
+  }, [todos, loading]);
 
   // Function to add a new to-do
   const addTodo = () => {
@@ -100,6 +102,10 @@ const App = () => {
     setTodos(updatedTodos);
   };
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="app-wrapper">
       <div className="input-wrapper">
@@ -107,7 +113,7 @@ const App = () => {
           type="text"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          onKeyPress={handleKeyPress}
+          onKeyDown={handleKeyPress}
           placeholder="Create Todo-Task"
           className="input"
         />
@@ -124,13 +130,13 @@ const App = () => {
                 ref={editInputRef}
                 value={editValue}
                 onChange={(e) => setEditValue(e.target.value)}
-                onKeyPress={(e) => {
+                onKeyDown={(e) => {
                   if (e.key === "Enter") updateTodo(index);
                 }}
                 className="edit-input"
               />
             ) : (
-              <div className={todo.completed === true && "completed"}>
+              <div className={todo.completed ? "completed" : undefined}>
                 <input
                   type="checkbox"
                   checked={todo.completed}
@@ -153,19 +159,19 @@ const App = () => {
                 editIndex === index ? "todo-updateBtn active" : "todo-updateBtn"
               }
             >
-              <img src="img/update-btn.svg" />
+              <img src={updateImg} />
             </button>
             <button
               onClick={() => deleteTodo(index)}
               className="todo-deleteBtn"
             >
-              <img src="img/delete-btn.svg" />
+              <img src={deleteImg} />
             </button>
           </li>
         ))}
       </ul>
     </div>
   );
-};
+}
 
-ReactDOM.render(<App />, document.getElementById("root"));
+export default App;
