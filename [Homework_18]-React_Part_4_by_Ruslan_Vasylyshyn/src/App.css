@@ -1,0 +1,112 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Hind Siliguri", sans-serif;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(
+    117deg,
+    #8c72b7 0.58%,
+    rgba(192, 46, 195, 0) 101.02%
+  );
+}
+
+.app-wrapper {
+  width: 100%;
+  max-width: 676px;
+  height: auto;
+}
+
+.input-wrapper {
+  display: flex;
+  margin-top: 99px;
+  margin-bottom: 81px;
+}
+
+.input {
+  width: 554px;
+  height: 65px;
+  background: #ecf3ff;
+  border: #ecf3ff;
+  padding-left: 88px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.add-button {
+  width: 122px;
+  height: 65px;
+  background: #5275a0;
+  border: #5275a0;
+  color: #fff;
+  cursor: pointer;
+}
+
+.todo-items {
+  list-style-type: none;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.todo-item {
+  margin-bottom: 47px;
+  display: flex;
+  align-items: center;
+}
+
+.todo-item > div {
+  width: 554px;
+  height: 65px;
+  background: #ecf3ff;
+  padding-left: 30px;
+  display: flex;
+  align-items: center;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.edit-input {
+  width: 554px;
+  height: 65px;
+  background: #ecf3ff;
+  border: #ecf3ff;
+  padding-left: 88px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.todo-item > button {
+  width: 63px;
+  height: 65px;
+  background-color: transparent;
+  border: transparent;
+  cursor: pointer;
+}
+
+.todo-updateBtn.active {
+  background-color: #5275a0;
+}
+
+.todo-checkbox {
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+  margin-right: 23px;
+}
+
+.completed {
+  text-decoration: line-through;
+  color: #888;
+}
