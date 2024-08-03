@@ -1,0 +1,62 @@
+.traffic-light-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.traffic-light {
+  width: calc(240px - 24px);
+  height: 560px;
+  background-color: #585f68;
+  border-radius: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  left: 24px;
+}
+
+.traffic-light-shadow {
+  width: 240px;
+  height: 560px;
+  background-color: #4f555e;
+  border-radius: 60px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.traffic-light-hat {
+  width: 120px;
+  height: 378px;
+  border-radius: 40px;
+  background-color: #414447;
+  position: absolute;
+  top: -32px;
+  left: calc(50% - 48px);
+  z-index: 0;
+}
+
+.light {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background-color: grey;
+  margin-bottom: 24px;
+  margin-left: 36px;
+}
+
+.light.red {
+  background-color: #df4040;
+}
+
+.light.yellow {
+  background-color: #e9ec6a;
+}
+
+.light.green {
+  background-color: #04ca00;
+}
