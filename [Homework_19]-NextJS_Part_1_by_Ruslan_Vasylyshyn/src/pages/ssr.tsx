@@ -21,22 +21,24 @@ interface AvatarProps {
   isLoading: boolean;
 }
 
-const fetchAvatar = async ():Promise<Avatar> => {
+const fetchAvatar = async (avatarQuantity: number = 1): Promise<Avatar[]> => {
   try {
     const response = await fetch(
-      "https://tinyfac.es/api/data?limit=1&quality=0"
+      `https://tinyfac.es/api/data?limit=${avatarQuantity}&quality=0`
     );
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
     const data = await response.json();
-    return data[0];
+    return data;
   } catch (error) {
-    throw new Error("The server is temporarily unavailable. Too many requests. Try again later.");
+    throw new Error(
+      "The server is temporarily unavailable. Too many requests. Try again later."
+    );
   }
 };
 
-const Avatar:FC<AvatarProps> = ({ avatar, onUpdate, isLoading }) => (
+const Avatar: FC<AvatarProps> = ({ avatar, onUpdate, isLoading }) => (
   <div className={styles.avatar}>
     {isLoading ? (
       <div className={styles.loader}></div>
@@ -49,7 +51,7 @@ const Avatar:FC<AvatarProps> = ({ avatar, onUpdate, isLoading }) => (
   </div>
 );
 
-const SSRPage:FC<SSGPageProps> = ({ initialAvatars, error }) => {
+const SSRPage: FC<SSGPageProps> = ({ initialAvatars, error }) => {
   const [avatars, setAvatars] = useState(initialAvatars);
   const [loadingIndexes, setLoadingIndexes] = useState<number[]>([]);
   const [isAdding, setIsAdding] = useState(false);
@@ -59,11 +61,11 @@ const SSRPage:FC<SSGPageProps> = ({ initialAvatars, error }) => {
   const addAvatar = async () => {
     setIsAdding(true);
     try {
-      const newAvatar = await fetchAvatar();
-      setAvatars([...avatars, newAvatar]);
+      const newAvatar: Avatar[] = await fetchAvatar(1);
+      setAvatars([...avatars, ...newAvatar]);
       setClientError(null);
     } catch (error) {
-      if(error instanceof Error){
+      if (error instanceof Error) {
         setClientError(error.message);
       } else {
         setClientError("An unknown error occurred.");
@@ -73,15 +75,16 @@ const SSRPage:FC<SSGPageProps> = ({ initialAvatars, error }) => {
     }
   };
 
-  const updateAvatar = async (index:number) => {
+  const updateAvatar = async (index: number) => {
     setLoadingIndexes([...loadingIndexes, index]);
     try {
-      const newAvatar = await fetchAvatar();
-      const newAvatars = avatars.slice();
-      newAvatars[index] = newAvatar;
-      setAvatars(newAvatars);
+      const newAvatars = await fetchAvatar(1);
+      const newAvatarsList = avatars.slice();
+      newAvatarsList[index] = newAvatars[0];
+      setAvatars(newAvatarsList);
+      setClientError(null);
     } catch (error) {
-      if(error instanceof Error){
+      if (error instanceof Error) {
         setClientError(error.message);
       } else {
         setClientError("An unknown error occurred.");
@@ -92,12 +95,17 @@ const SSRPage:FC<SSGPageProps> = ({ initialAvatars, error }) => {
   };
 
   const updateAllAvatars = async () => {
+    if (avatars.length === 0) {
+      setClientError("There are no avatar to update. Please add avatar.");
+      return;
+    }
     setIsUpdatingAll(true);
     try {
-      const newAvatars = await Promise.all(avatars.map(() => fetchAvatar()));
+      const newAvatars = await fetchAvatar(avatars.length);
       setAvatars(newAvatars);
+      setClientError(null);
     } catch (error) {
-      if(error instanceof Error){
+      if (error instanceof Error) {
         setClientError(error.message);
       } else {
         setClientError("An unknown error occurred.");
@@ -153,13 +161,11 @@ const SSRPage:FC<SSGPageProps> = ({ initialAvatars, error }) => {
       </div>
     </div>
   );
-}
+};
 
 export async function getServerSideProps() {
   try {
-    const initialAvatars = await Promise.all(
-      Array.from({ length: 5 }).map(() => fetchAvatar())
-    );
+    const initialAvatars = await fetchAvatar(5);
 
     return {
       props: {
@@ -171,7 +177,8 @@ export async function getServerSideProps() {
     return {
       props: {
         initialAvatars: [],
-        error: "The server is temporarily unavailable. Too many requests. Try again later.",
+        error:
+          "The server is temporarily unavailable. Too many requests. Try again later.",
       },
     };
   }
