@@ -3,16 +3,16 @@ import refreshImg from "./assets/img/refresh.svg";
 import tilesImg from "./assets/img/tiles.svg";
 import "./App.css";
 
-const fetchAvatar = async () => {
+const fetchAvatar = async (avatarQuantity = 1) => {
   try {
     const response = await fetch(
-      "https://tinyfac.es/api/data?limit=1&quality=0"
+      `https://tinyfac.es/api/data?limit=${avatarQuantity}&quality=0`
     );
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
     const data = await response.json();
-    return data[0];
+    return data;
   } catch (error) {
     throw new Error("The server is temporarily unavailable. Try again later.");
   }
@@ -41,8 +41,8 @@ function App() {
   const addAvatar = async () => {
     setIsAdding(true);
     try {
-      const newAvatar = await fetchAvatar();
-      setAvatars([...avatars, newAvatar]);
+      const newAvatar = await fetchAvatar(1);
+      setAvatars([...avatars, ...newAvatar]);
       setError(null);
     } catch (error) {
       setError(error.message);
@@ -54,9 +54,9 @@ function App() {
   const updateAvatar = async (index) => {
     setLoadingIndexes([...loadingIndexes, index]);
     try {
-      const newAvatar = await fetchAvatar();
+      const newAvatar = await fetchAvatar(1);
       const newAvatars = avatars.slice();
-      newAvatars[index] = newAvatar;
+      newAvatars[index] = newAvatar[0];
       setAvatars(newAvatars);
     } catch (error) {
       setError(error.message);
@@ -66,9 +66,13 @@ function App() {
   };
 
   const updateAllAvatars = async () => {
+    if (avatars.length === 0) {
+      setError("There are no avatar to update. Please add avatar.");
+      return;
+    }
     setIsUpdatingAll(true);
     try {
-      const newAvatars = await Promise.all(avatars.map(() => fetchAvatar()));
+      const newAvatars = await fetchAvatar(avatars.length);
       setAvatars(newAvatars);
     } catch (error) {
       setError(error.message);
