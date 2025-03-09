@@ -1,0 +1,21 @@
+:root {
+  --primary-color: #e9ebec;
+  --secondary-color: #fff;
+  --third-color: #d7d7d7;
+  --hover-color: #19191b;
+
+  --primary-text-color: #3d3d3d;
+  --secondary-text-color: #575757;
+  --third-text-color: #3a3a3a;
+}
+
+.dark-theme {
+  --primary-color: #0c151d;
+  --secondary-color: #171f26;
+  --third-color: #0c151d;
+  --hover-color: #e9ebec;
+
+  --primary-text-color: #f1f2f4;
+  --secondary-text-color: #a3abb2;
+  --third-text-color: #a3abb2;
+}
